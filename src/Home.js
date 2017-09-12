@@ -13,7 +13,7 @@ class Home extends Component {
 
   startSocket() {
     const self = this;
-    const socket = io.connect('http://192.168.7.130:8080');
+    const socket = io.connect('https://cpa-server.herokuapp.com/');
     socket.emit('bitcoin', {
       btcPercent: self.refs.btcPercent.getValue(),
       btcTime: self.refs.btcTime.getValue(),

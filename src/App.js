@@ -6,9 +6,9 @@ import io from 'socket.io-client';
 
 class App extends Component {
   componentDidMount() {
-    const socket = io.connect('http://192.168.7.130:8080');
+    const socket = io.connect('https://cpa-server.herokuapp.com/');
     const self = this;
-    fetch('http://192.168.7.130:8080')
+    fetch('https://cpa-server.herokuapp.com/')
     .then(function(res) {
       res.json().then(({ model }) => {
         self.setState({ model })
