@@ -21,7 +21,10 @@ class App extends Component {
   
     socket.on('alert', function (data) {
       audio.play();
+      let conditionMet = true;
+      if(conditionMet === true){
       window.alert("CONDITION MET");
+      }
     })
 
     socket.on('bitcoinUpdate', function (data) {
