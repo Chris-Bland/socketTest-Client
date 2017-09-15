@@ -1,29 +1,44 @@
 import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import TextField from 'material-ui/TextField';
-import io from 'socket.io-client';
 import numeral from 'numeral';
 
 class Home extends Component {
   constructor(props) {
     super(props);
-
-    this.startSocket = this.startSocket.bind(this)
+    this.calculateBTC = this.calculateBTC.bind(this);
+    this.checkConditionMet = this.checkConditionMet.bind(this);
   }
 
-  startSocket() {
+  calculateBTC() {
     const self = this;
-    const socket = io.connect('https://cpa-server.herokuapp.com/');
-    socket.emit('bitcoin', {
-      btcPercent: self.refs.btcPercent.getValue(),
-      btcTime: self.refs.btcTime.getValue(),
-    })
+    console.log('btcPercent: ', self.refs.btcPercent.getValue());
+    console.log('btcTime: ', self.refs.btcTime.getValue());
+    console.log("props", self.props.model);
+
+    self.props.model.btcTotalTime = self.refs.btcTime.getValue();
+    self.props.model.btcPercent = self.refs.btcPercent.getValue();
+    self.setState({btcTotalTime:  self.refs.btcTime.getValue()})
+    self.setState({btcPercent: self.refs.btcPercent.getValue()})
+    this.checkConditionMet();
   }
+
+  checkConditionMet() {
+    const self=this;
+    if(self.props.model.btcPercentChange >= self.props.model.btcPercent){
+    var audio = new Audio('/alert.mp3');
+    audio.play();
+    let conditionMet = true;
+    if (conditionMet === true) {
+      window.alert("CONDITION MET");
+    }
+  }
+  }
+
 
   render() {
-
-    const { btcColor, btcPercentChange, btcAverage, btcTotalTime, btcTicker: { price } } = this.props.model
-    console.log('btcPercentChange: ', btcPercentChange);
+    
+    var { btcColor, btcPercentChange, btcAverage, btcTotalTime, btcTicker: { price } } = this.props.model
 
     return (
       <div>
@@ -32,7 +47,7 @@ class Home extends Component {
           <h2 id="btcLastTraded">Last Traded Price: {numeral(price).format('$0,0.00')} </h2>
           <h2 id="btcMovementPeriod">Movement Period Watched: {btcTotalTime} minutes</h2>
           <h2 id="btcAverage">Average Moving Price: {numeral(btcAverage).format('$0,0.00')}</h2>
-          <h2 id="btcMovementPercentage" style={{ color: `${btcColor}`}}> Bitcoin has moved {numeral(btcPercentChange).format('0.00%')}</h2>
+          <h2 id="btcMovementPercentage" style={{ color: `${btcColor}` }}> Bitcoin has moved {numeral(btcPercentChange).format('0.00%')}</h2>
         </div>
         <h3>Alert when Bitcoin has moved: </h3>
         <TextField
@@ -49,7 +64,7 @@ class Home extends Component {
         <br />
         <br />
         <RaisedButton
-          onClick={this.startSocket}
+          onClick={this.calculateBTC}
           label="Set" />
       </div>
     );
